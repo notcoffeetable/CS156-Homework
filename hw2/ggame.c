@@ -43,16 +43,7 @@ int getGuess(){
 	int _guess;
 	printf("What's your guess? ");
 	scanf("%d", &_guess);
-
-	if((_guess < 1 || _guess > 100)) 
-	{
-		printf("%d is not 1-100.\n", _guess);
-		return getGuess();
-	}
-	else
-	{
-		return _guess; // this is the condition that stops the recursion
-	}
+	return _guess;
 }
 
 int main() {
@@ -60,15 +51,27 @@ int main() {
 
 	srand(time(NULL));
 	goal = rand() % 100 + 1;
+
 	numberOfGuesses = 0;
 
 
-	printf("I have thought of a number, 1-100.\n");
+	printf("I have thought of a number (%d), 1-100.\n", goal);
 
 	while (guess != goal)
 	{
-		numberOfGuesses++;
+
+		numberOfGuesses++;	
 		guess = getGuess();
+
+		while(guess < 1 || guess > 100)
+		{
+
+			printf("%d is not 1-100.\n", guess);
+			numberOfGuesses++;		
+			guess = getGuess();
+
+		}
+
 
 		deltaG = (guess > goal) ? guess - goal : goal - guess;
 		
