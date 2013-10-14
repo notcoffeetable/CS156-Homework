@@ -47,6 +47,8 @@ int mapTemp(int _goal, int _guess) {
 			return 5;
 		else if (50 < deltaG) 
 			return 6;
+		else
+			return -1;
 }
 
 /*
@@ -72,23 +74,26 @@ int checkGuess(int _goal, int _guess, int _numberOfGuesses) {
 		printf("%d is ", _guess);
 		switch(tempID) {
 			case 1:
-				printf("scalding.\n", _guess);
+				printf("scalding.\n");
 				break;
 			case 2: 
-			    printf("hot.\n", _guess);
+			    printf("hot.\n");
 			    break;
 			case 3:
-			    printf("warm.\n", _guess);
+			    printf("warm.\n");
 				break;
 			case 4:
-			    printf("chilly.\n", _guess);
+			    printf("chilly.\n");
 				break;
 			case 5:
-			    printf("cold.\n", _guess);
+			    printf("cold.\n");
 				break;
 			case 6:
-			    printf("freezing.\n", _guess);
+			    printf("freezing.\n");
 				break;
+			case -1:
+			    printf("incalculable.\n");
+			    break;
 		}
 	}
 
@@ -140,6 +145,7 @@ int main() {
 			continue;
 		}
 
+		// checkGuess returns true (1) if guess == goal and false (0) otherwise.
 		if(checkGuess(goal, guess, numberOfGuesses))
 			break;
 	}
