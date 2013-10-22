@@ -28,6 +28,7 @@
 	4 - Guess within "chilly" range of goal.
 	5 - Guess within "cold" range of goal.
 	6 - Guess so far from goal that is is "freezing."
+   -1 - Something weird happened and 
 */
 int mapTemp(int _goal, int _guess) {
 
