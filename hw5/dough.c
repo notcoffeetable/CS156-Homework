@@ -73,7 +73,7 @@ int process_file(int numArgs, char *arguments[]) {
 						"Error in %s.\n"
 						"Could not locate currency \'%s\' in file \'%s\'.\n",
 						arguments[0], arguments[i], arguments[1]);
-					return 3;
+					continue;
 				}
 
 
@@ -91,6 +91,17 @@ int process_file(int numArgs, char *arguments[]) {
 				// will be the current character and the second alwasy the string termination character.
 				char c[2] = "";
 
+				if(*(currency_location + currencyLength) != ' ' 
+					|| (currency_location != &file_contents[0] && (*(currency_location - 1) != '\n'))
+				) {
+
+					fprintf(stderr, "previous character %d\n", *(currency_location - 1) );
+						fprintf(stderr, 
+							"Error in %s.\n"
+							"Could not locate currency \'%s\' in file \'%s\'.\n",
+							arguments[0], arguments[i], arguments[1]);
+							continue;
+				}
 				// instantiate j is the currency length so we're starting at the character after the currency name.
 				// Check to make sure we aren't on a \n, the end of the line.
 				// Go to the next character index.
