@@ -91,11 +91,10 @@ int process_file(int numArgs, char *arguments[]) {
 				// will be the current character and the second alwasy the string termination character.
 				char c[2] = "";
 
-				if(*(currency_location + currencyLength) != ' ' 
-					|| (currency_location != &file_contents[0] && (*(currency_location - 1) != '\n'))
-				) {
-
-					fprintf(stderr, "previous character %d\n", *(currency_location - 1) );
+				//We need ot check if we actually found a valid currency.
+				// If the character immediately 
+				if((*(currency_location + currencyLength) != ' ' && *(currency_location + currencyLength) != '\t')
+					|| (currency_location != &file_contents[0] && (*(currency_location - 1) != '\n'))) {
 						fprintf(stderr, 
 							"Error in %s.\n"
 							"Could not locate currency \'%s\' in file \'%s\'.\n",
