@@ -43,13 +43,13 @@ int main(int argc, char *argv[]) {
 			fprintf(stderr, 
 			"%s Error: file %s could not be opened.\n",
 			argv[0], argv[i]);
-			continue;
+			free(found_pairs);		
+			return 3;
 		}
 
 
 		int c;
-		char digraph[2] = {' ', ' '};
-		
+		char digraph[2] = {' ', ' '};		
 		while((c = tolower(fgetc(filehandle))) != EOF)
 		{
 			digraph[0] = digraph[1];
