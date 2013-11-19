@@ -11,12 +11,12 @@
 #include <ctype.h>
 #include <stdbool.h>
 
+//Structure for containing digraphs.
 struct Pair {		// Note the capital P.
     char first, second;
     int count;
 };
 
-bool is_suspicious(const char);
 bool who_in_whoville(char who_to_find[2], int whoville_population, struct Pair whoville[]);
 
 int main(int argc, char *argv[]) {
@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
 		{
 			digraph[0] = digraph[1];
 			digraph[1] = c;
-			if(is_suspicious(digraph[0]) || is_suspicious(digraph[1]))
+			if(!isalpha(digraph[0]) || !isalpha(digraph[1]))
 				continue;
 
 			if(!who_in_whoville(digraph, number_of_pairs, found_pairs)){
@@ -103,11 +103,4 @@ bool who_in_whoville(char who_to_find[2], int whoville_population, struct Pair w
 	}
 
 	return who_found;
-}
-
-bool is_suspicious(const char shifty_looking_character)  {
-	if(!isalpha(shifty_looking_character))
-		return true;
-	else
-		return false;
 }
