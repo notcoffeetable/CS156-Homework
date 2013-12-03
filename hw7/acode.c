@@ -11,10 +11,14 @@
 #include <stdbool.h>
 #include <string.h>
 
+#define MAX_LINE_LENGTH 500
+#define MAX_MATCH_LENGTH 10
 
+// Comments for these listed with the function definition.
 int check_arguments(int count, char *values[]); 
 int find_area_info(char *to_find, FILE *info_file);
 int check_query_type(char *mystery_string);
+int compare(const void *av, const void *bv);
 
 int main(int argc, char *argv[]) {
 	// If we have fewer than 3 arguments (including the name of the program) or 
@@ -34,11 +38,13 @@ int main(int argc, char *argv[]) {
 		return 2;
 	}
 
+	// Process each query
 	for(int i = 2; i < argc; i++) {
 		find_area_info(argv[i], area_code_info);
 	}
 
 
+	// All done.
 	fclose(area_code_info);
 	return 0;
 }
@@ -57,51 +63,47 @@ int check_arguments(int count, char *values[]) {
 	return 0;
 }
 
-typedef struct info_element_struct {
-	char info[500];
-	struct info_element *next;
-} info_element;
-
 int find_area_info(char *to_find, FILE *info_file) {
 	rewind(info_file); // Make sure we're starting from the beginning of the file.
 
-	bool searching_for_acode = check_query_type(to_find);
-	char buf[500] = {0};
-	char matches_list[10][500];
+	bool searching_for_acode = check_query_type(to_find); // figure out if we're doing an area code search or a string search.
+	char buf[MAX_LINE_LENGTH] = {0}; // We'll hold our current line here,
+	char matches_list[MAX_MATCH_LENGTH][MAX_LINE_LENGTH]; // We'll keep an array of the first 10 matches.
 	int match_count = 0;
 
 	int c;
 	int line_length = 0;
 	while ((c = fgetc(info_file)) != EOF) {	
-		buf[line_length] = c;
-		line_length++;
-		if('\n' == c) {
-			char *position = strstr(buf, to_find);
-			if(position != NULL)
+		buf[line_length] = c; // read the character into the buffer.
+		line_length++; // Track how many characters we've recorded.
+		if('\n' == c) { // When we hit the end of the line, let's start looking for matches.
+			char *position = strstr(buf, to_find); // Find a match and store it's position.
+			if(position != NULL) // If we actually have a match then figure out if it actually counts
 			{
-				if(position[0] == buf[0] && searching_for_acode) {
-					if(match_count < 10)
+				if(position[0] == buf[0] && searching_for_acode) { // we don't want area codes to match in the body of the description.
+					if(match_count < MAX_MATCH_LENGTH)
 						strcpy(matches_list[match_count],buf);
 					match_count++;
 				} else if (!searching_for_acode){		
-					if(match_count < 10)					
+					if(match_count < MAX_MATCH_LENGTH)					
 						strcpy(matches_list[match_count],buf);
 					match_count++;
 				}
 			}
-			memset(buf, 0, sizeof(buf));
+			memset(buf, 0, sizeof(buf)); // Clear the buffer so we can check the next line.
 			line_length = 0;
-		}
-
-		
+		}		
 	}
 
 	printf("Area codes for \"%s\":\n", to_find);
-	if(match_count > 10)
+	// If there were more than 10 matches, just print how many there were.
+	if(match_count > MAX_MATCH_LENGTH) {
 		printf("   that gave %d matches\n", match_count);
-	else
+	} else { // Otherwise, sort the array then print the matches.
+		qsort(matches_list, match_count, sizeof(buf), compare);
 		for(int i = 0; i < match_count; i++)
 			printf("   %s", matches_list[i]);
+	}
 
  return 0;
 }
@@ -118,7 +120,7 @@ int check_query_type(char *mystery_string) {
 			return 0;
 
 		//printf("%c is being checked.\n", *mystery_string);
-		if(isdigit(*mystery_string)) {
+		if(isdigit(*mystery_string)) { 
 			mystery_string++;
 			length++;
 			continue;
@@ -129,4 +131,16 @@ int check_query_type(char *mystery_string) {
 	}while(*mystery_string != '\0');
 
 	return 1; // We got this far so it must be all digits.
+}
+
+// This is our compare function for qsort.
+// Compares to thing and returns -1 if the first comes before the second,
+// 1 is the first comes after the second
+// 0 if they are equal.
+int compare(const void *av, const void *bv) {
+        const char *a = av, *b = bv;
+        int ai = atoi(a), bi = atoi(b); // this will just convert the area code at the beginning of the line to an int for comparison.
+        if (ai < bi) return -1;
+        if (ai > bi) return 1;
+        return 0;
 }
