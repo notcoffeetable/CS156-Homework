@@ -80,7 +80,8 @@ int find_area_info(char *to_find, FILE *info_file) {
 			char *position = strstr(buf, to_find); // Find a match and store it's position.
 			if(position != NULL) // If we actually have a match then figure out if it actually counts
 			{
-				if(position[0] == buf[0] && searching_for_acode) { // we don't want area codes to match in the body of the description.
+				if(position[0] == buf[0] && position[1] == position[1] && position[2] == buf[2]
+				&& searching_for_acode) { // we don't want area codes to match in the body of the description.
 					if(match_count < MAX_MATCH_LENGTH)
 						strcpy(matches_list[match_count],buf);
 					match_count++;
